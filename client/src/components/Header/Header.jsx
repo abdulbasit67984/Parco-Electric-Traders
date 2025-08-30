@@ -326,7 +326,7 @@ function Header() {
     {
       name: 'Register account',
       slug: '/signup',
-      active: isAdmin(),
+      active: true,
       isAdmin: true
     },
     {
