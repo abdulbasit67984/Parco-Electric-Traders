@@ -64,7 +64,7 @@ const BarcodePrinting = () => {
         <div class="label">
           <svg id="barcode-${p.productCode}"></svg>
           <div class="info">
-            <strong>${p.productName}</strong><br />
+            <strong>Parko Electric</strong><br />
             
           </div>
         </div>`
