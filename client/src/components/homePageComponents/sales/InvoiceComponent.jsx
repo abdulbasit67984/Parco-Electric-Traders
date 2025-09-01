@@ -839,16 +839,18 @@ const InvoiceComponent = () => {
 
 
           <div className='col-span-2 flex items-center'>
-            <QuotationComponent
-              selectedItems={selectedItems}
-              totalAmount={totalAmount}
-            />
+            <div className={`w-full rounded-md ${billType === 'thermal' ? "bg-purple-500" : A4Color.a4100}`}>
+              <QuotationComponent
+                selectedItems={selectedItems}
+                totalAmount={totalAmount}
+              />
+            </div>
           </div>
 
           <div className='col-span-2 flex items-center'>
             <Button
               className="px-4 w-40 hover:bg-emerald-800"
-              bgColor="bg-emerald-700"
+              bgColor={billType === 'thermal' ? "bg-emerald-700" : A4Color.a4500}
               onClick={() => setShowQuotationListModal(true)}
             >
               <p className="text-xs text-white">Quotation List</p>
@@ -997,7 +999,7 @@ const InvoiceComponent = () => {
 
             <Button
               className={`w-40 px-4 ${billType === 'thermal' ? 'hover:bg-green-800' : 'hover:bg-gray-700'}`}
-              bgColor={billType === 'thermal' ? 'bg-green-600' : A4Color.a4500}
+              bgColor={billType === 'thermal' ? 'bg-green-600' : 'bg-primary'}
               onClick={generateInvoice}
             >
               <p className='text-xs text-white'>Generate Invoice</p>
@@ -1063,7 +1065,7 @@ const InvoiceComponent = () => {
       <div>
         <div className="overflow-auto  max-h-40 scrollbar-thin" ref={tableContainerRef}>
           <table className="min-w-full bg-white border text-xs ">
-            <thead className={`bg-primary sticky -top-0  border-b shadow-sm z-10`}>
+            <thead className={`bg-primary/80 sticky text-white -top-0  border-b shadow-sm z-10`}>
               <tr className={` border-b`}>
                 <th className="py-2 px-1 text-left">S No</th>
                 <th className="py-2 px-1 text-left">Name</th>
@@ -1082,7 +1084,7 @@ const InvoiceComponent = () => {
                 const netAmount = (grossAmount * (1 - item.discount / 100)).toFixed(2);
 
                 return (
-                  <tr key={index} className={`border-t ${billType === 'thermal' ? thermalColor.th100 : A4Color.a4100}`}>
+                  <tr key={index} className={`border-t bg-primary/20`}>
                     <td className=" px-1">{index + 1}</td>
                     <td className=" px-1">{item.productName}</td>
                     <td className=" px-1 flex items-start">
@@ -1156,7 +1158,7 @@ const InvoiceComponent = () => {
                 const netAmount = (grossAmount).toFixed(2);
 
                 return (
-                  <tr key={index} className={`border-t ${billType === 'thermal' ? thermalColor.th100 : A4Color.a4100}`}>
+                  <tr key={index} className={`border-t bg-primary/20`}>
                     <td className=" px-1">{selectedItems.length + index + 1}</td>
                     <td className=" px-1">{item.itemName}</td>
                     <td className=" px-1">{item.quantity}</td>
@@ -1186,7 +1188,7 @@ const InvoiceComponent = () => {
 
 
       {/* Totals Section */}
-      <div className={`mt-4 p-2 border-t border-gray-300 bg-primary/60`}>
+      <div className={`mt-4 p-2 border-t border-gray-300 bg-primary/30`}>
         <div className="grid grid-cols-3 gap-2 text-xs">
           <div className="col-span-1">
 

@@ -150,13 +150,6 @@ const ViewBill = React.forwardRef((props, ref) => {
                     </div>
                 }
 
-                {/* {!packingSlip &&
-                    <div className='mt-3'>
-                        <p className='text-[12px] text-right'>نوٹ:  کوئی بھی آئیٹم واپس یا تبدیل ہو سکتا ہے بشرطیکہ وہ اپنی اصلی حالت میں ہو اور مکمل پیکنگ میں ہو۔ چائنہ آئیٹمز کی واپسی نہیں ہوگی۔ کسی بھی آئٹم کی واپسی صرف بل یا رسید کی موجودگی میں ہی قابل قبول ہوگی۔ </p>
-
-                    </div>
-                } */}
-
                 {/* Signature Section */}
                 <div className=''>
                     {exemptedParagraph &&

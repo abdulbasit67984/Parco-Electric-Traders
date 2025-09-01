@@ -69,7 +69,7 @@ export default function QuotationComponent({
     <div className="inline-block w-full">
       <Button
         onClick={() => setShow(true)}
-        className="bg-purple-500 hover:bg-purple-700 w-full text-white px-4 py-2 rounded"
+        className=" hover:bg-purple-700 w-full text-white px-4 py-2 rounded"
       >
         Save as Quotation
       </Button>

@@ -102,7 +102,6 @@ const StockRegistrationForm = () => {
       if (response && response.data) {
         setLoading(false)
         setSuccessMessage(true)
-        reset()
         const products = await config.fetchAllProducts()
         if (products && products.data)
           dispatch(setAllProducts(products.data))
