@@ -23,16 +23,21 @@ const ViewBill = React.forwardRef((props, ref) => {
                 {/* Business Information */}
                 <div className="flex justify-center">
 
+                    <div className='ml-5'>
+                        <img src={billLogo} alt="" className='h-36 w-36' />
+                    </div>
+
                     <div className='text-center w-full'>
-                        <div className='flex ml-3'>
-                            <img src={billLogo} alt="" className='h-28 w-28' />
-                            <div className='flex items-center justify-center ml-5'>
-                                <h2 className="text-2xl font-bold pb-2">{bill?.BusinessId?.businessName}</h2>
+                        <div className='flex pl-4'>
+                            
+                            <div className='flex items-end justify-center ml-5'>
+                                <span className='text-4xl font-bold pb-2 pr-1'>PARKO </span> <h2 className="text-xl font-bold pb-2"> ELECTRIC AND ELECTRONICS</h2>
+                                <span className='text-xs pb-6 pl-2'>RTM 294967</span>
                             </div>
                         </div>
-                        <p className="text-sm">{bill?.storeAddress}</p>
-                        <p className="text-sm"><span className='font-bold'>Phone</span> &#128382;: {bill?.BusinessId?.owner?.mobileno?.map((num, i) => <span className='px-1' key={i}>{num}</span>)} | <span className='font-bold'>Address</span> &#10003;: {bill?.BusinessId?.businessRegion}</p>
-                        <h3 className="text-xl font-bold mt-4">{packingSlip ? 'Packing Slip' : 'Sale Invoice'}</h3>
+                        <p className="text-sm ">{bill?.storeAddress}</p>
+                        <p className="text-sm text-left ml-10 "><span className='font-bold'>Phone</span> &#128382;: {bill?.BusinessId?.owner?.mobileno?.map((num, i) => <span className='px-1' key={i}>{num}</span>)} | <span className='font-bold'>Address</span> &#10003;: {bill?.BusinessId?.businessRegion}</p>
+                        <h3 className="text-xl font-bold mt-4 text-left ml-10">{packingSlip ? 'Packing Slip' : 'Sale Invoice'}</h3>
                     </div>
                     <div></div>
                 </div>
