@@ -24,7 +24,7 @@ const ViewBill = React.forwardRef((props, ref) => {
                 <div className="flex justify-center">
 
                     <div className='ml-5'>
-                        <img src={billLogo} alt="" className='h-36 w-36' />
+                        <img src={billLogo} alt="" className='w-36' />
                     </div>
 
                     <div className='text-center w-full'>
