@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 import { useEffect, useState } from "react";
 import '../styling/WelcomeCSS.css';
-import MagicUiAnimation from "../components/magicUI/magicUiAnimation";
+import MagicUiAnimation from "../components/magicUI/MagicUiAnimation";
 import Loader from "./Loader";
 import { useSelector, useDispatch } from "react-redux";
 import config from '../features/config'
@@ -156,19 +156,19 @@ function WelcomePage() {
 
     }
 
-    const fetchUserData = async () => {
-        const response = await authService.getCurrentUser()
-        if (response) {
-            console.log("welcome page userdata: ", response.data);
-            dispatch(setPrimayPath((response.data?.BusinessId ? response.data.BusinessId.businessName : response.data?.username)?.replace(/ /g, '-')))
-            dispatch(setCurrentUser(response.data))
-        }
+    // const fetchUserData = async () => {
+    //     const response = await authService.getCurrentUser()
+    //     if (response) {
+    //         console.log("welcome page userdata: ", response.data);
+    //         dispatch(setPrimayPath((response.data?.BusinessId ? response.data.BusinessId.businessName : response.data?.username)?.replace(/ /g, '-')))
+    //         dispatch(setCurrentUser(response.data))
+    //     }
 
 
-    }
+    // }
 
     useEffect(() => {
-        fetchUserData();
+        // fetchUserData();
         setSuccessMessage('')
         fetchAllProducts();
         fetchAllCustomers();

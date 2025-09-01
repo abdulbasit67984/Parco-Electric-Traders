@@ -50,6 +50,7 @@ const InvoiceComponent = () => {
   const [productUnitError, setProductUnitError] = useState('');
   const [priceError, setPriceError] = useState('');
   const [billNo, setBillNo] = useState(0)
+  const [viewBillNo, setViewBillNo] = useState(0)
   const [description, setDescription] = useState('')
   const [billType, setBillType] = useState('thermal')
   const [billPaymentType, setBillPaymentType] = useState('cash')
@@ -79,7 +80,20 @@ const InvoiceComponent = () => {
 
   const inputRef = useRef(null);
 
+  const buttonRef = useRef(null);
 
+  useEffect(() => {
+    const handleKeyPress = (e) => {
+      if (isInvoiceGenerated && e.key === "Enter") {
+        handleViewBill(viewBillNo);
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyPress);
+    return () => {
+      window.removeEventListener("keydown", handleKeyPress);
+    };
+  }, [isInvoiceGenerated, viewBillNo]);
 
   const tableContainerRef = useRef(null);
 
@@ -376,7 +390,9 @@ const InvoiceComponent = () => {
           dispatch(setExtraProducts([]))
         }
 
+        setViewBillNo(billNo)
         setIsInvoiceGenerated(true);
+        fetchLastBillNo(billType)
 
       } catch (error) {
         console.error('Failed to generate bill', error.response.data)
@@ -495,20 +511,21 @@ const InvoiceComponent = () => {
   // }, [dispatch, customerIndex, customerData])
 
 
-  useEffect(() => {
-
-    const fetchLastBillNo = async (billType) => {
-      setIsLoading(true)
-      try {
-        const response = await config.getLastBillNo(billType)
-        // console.log("resp", response.data.nextBillNo);
-        if (response) setBillNo(response.data.nextBillNo)
-      } catch (error) {
-        console.log(error)
-      } finally {
-        setIsLoading(false)
-      }
+  const fetchLastBillNo = async (billType) => {
+    setIsLoading(true)
+    try {
+      const response = await config.getLastBillNo(billType)
+      // console.log("resp", response.data.nextBillNo);
+      if (response) setBillNo(response.data.nextBillNo)
+    } catch (error) {
+      console.log(error)
+    } finally {
+      setIsLoading(false)
     }
+  }
+
+
+  useEffect(() => {
 
     fetchLastBillNo(billType)
   }, [billType])
@@ -839,55 +856,55 @@ const InvoiceComponent = () => {
           </div>
 
           {showQuotationListModal &&
-          <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-20">
-            <QuotationList
-            onClose={() => setShowQuotationListModal(false)}
-              onLoadQuotation={(q) => {
-                // Prefer full payload if available
-                const payload = q.payload ?? {};
+            <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-20">
+              <QuotationList
+                onClose={() => setShowQuotationListModal(false)}
+                onLoadQuotation={(q) => {
+                  // Prefer full payload if available
+                  const payload = q.payload ?? {};
 
-                // If you want to restore raw selected items directly:
-                const items =
-                  payload._rawSelectedItems ??
-                  q.items ?? // older minimal schema
-                  [];
+                  // If you want to restore raw selected items directly:
+                  const items =
+                    payload._rawSelectedItems ??
+                    q.items ?? // older minimal schema
+                    [];
 
-                // --- Redux restores (adjust import paths) ---
-                // set invoice core fields
-                dispatch(setSelectedItems(items));
-                dispatch(setFlatDiscount(payload.flatDiscount ?? 0));
-                dispatch(setTotalAmount(payload.totalAmount ?? q.total ?? 0));
-                dispatch(setPaidAmount(payload.paidAmount ?? 0));
-                dispatch(setPreviousBalance(0)); // if you track it
-                // Optional resets:
-                dispatch(setTotalQty(0));
-                dispatch(setTotalGrossAmount(0));
-                dispatch(setProductName(""));
-                dispatch(setProductQuantity(""));
-                dispatch(setProductDiscount(""));
-                dispatch(setProductPrice(""));
-                dispatch(setProduct({}));
+                  // --- Redux restores (adjust import paths) ---
+                  // set invoice core fields
+                  dispatch(setSelectedItems(items));
+                  dispatch(setFlatDiscount(payload.flatDiscount ?? 0));
+                  dispatch(setTotalAmount(payload.totalAmount ?? q.total ?? 0));
+                  dispatch(setPaidAmount(payload.paidAmount ?? 0));
+                  dispatch(setPreviousBalance(0)); // if you track it
+                  // Optional resets:
+                  dispatch(setTotalQty(0));
+                  dispatch(setTotalGrossAmount(0));
+                  dispatch(setProductName(""));
+                  dispatch(setProductQuantity(""));
+                  dispatch(setProductDiscount(""));
+                  dispatch(setProductPrice(""));
+                  dispatch(setProduct({}));
 
-                // set customer & meta if you track them in Redux/local state
-                if (payload.customer !== undefined) {
-                  dispatch(setCustomer(payload.customer ?? null));
-                }
-                if (payload.description !== undefined) {
-                  setDescription(payload.description ?? "");
-                }
-                if (payload.billPaymentType !== undefined) {
-                  setBillPaymentType(payload.billPaymentType ?? "");
-                }
-                if (payload.dueDate !== undefined) {
-                  setDueDate(payload.dueDate ?? "");
-                }
-                if (payload.extraItems !== undefined) {
-                  dispatch(setExtraProducts(payload.extraItems ?? []));
-                }
+                  // set customer & meta if you track them in Redux/local state
+                  if (payload.customer !== undefined) {
+                    dispatch(setCustomer(payload.customer ?? null));
+                  }
+                  if (payload.description !== undefined) {
+                    setDescription(payload.description ?? "");
+                  }
+                  if (payload.billPaymentType !== undefined) {
+                    setBillPaymentType(payload.billPaymentType ?? "");
+                  }
+                  if (payload.dueDate !== undefined) {
+                    setDueDate(payload.dueDate ?? "");
+                  }
+                  if (payload.extraItems !== undefined) {
+                    dispatch(setExtraProducts(payload.extraItems ?? []));
+                  }
 
-                alert(`Quotation "${q.name}" loaded into invoice ✅`);
-              }}
-            />
+                  alert(`Quotation "${q.name}" loaded into invoice ✅`);
+                }}
+              />
             </div>
 
           }
@@ -993,7 +1010,7 @@ const InvoiceComponent = () => {
         {searchQuery && (
           <div className="mt-2 -ml-2 overflow-auto absolute w-[81%] max-h-72 overflow-y-auto bg-white   scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-200 z-20">
             <table className={`min-w-full ${billType === 'thermal' ? thermalColor.th200 : A4Color.a4200} border text-xs`}>
-              <thead className={`${billType === 'thermal' ? thermalColor.th300 : 'bg-primary'} sticky -top-0 text-white  border-b shadow-sm z-10`}>
+              <thead className={`bg-primary sticky -top-0 text-white  border-b shadow-sm z-10`}>
                 <tr>
                   <th className="py-2 px-1 text-left">Code</th>
                   <th className="py-2 px-1 text-left">Name</th>
@@ -1046,9 +1063,7 @@ const InvoiceComponent = () => {
       <div>
         <div className="overflow-auto  max-h-40 scrollbar-thin" ref={tableContainerRef}>
           <table className="min-w-full bg-white border text-xs ">
-            <thead className={`${billType === 'thermal' ?
-              thermalColor.th300 :
-              A4Color.a4300} sticky -top-0  border-b shadow-sm z-10`}>
+            <thead className={`bg-primary sticky -top-0  border-b shadow-sm z-10`}>
               <tr className={` border-b`}>
                 <th className="py-2 px-1 text-left">S No</th>
                 <th className="py-2 px-1 text-left">Name</th>
@@ -1171,7 +1186,7 @@ const InvoiceComponent = () => {
 
 
       {/* Totals Section */}
-      <div className={`mt-4 p-2 border-t border-gray-300 ${billType === 'thermal' ? thermalColor.th100 : A4Color.a4100}`}>
+      <div className={`mt-4 p-2 border-t border-gray-300 bg-primary/60`}>
         <div className="grid grid-cols-3 gap-2 text-xs">
           <div className="col-span-1">
 

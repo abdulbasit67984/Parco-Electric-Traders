@@ -1,7 +1,6 @@
 /* eslint-disable react/prop-types */
 import React from 'react';
 import Logo from '../../../Logo';
-import paymentQR from '../../../../assets/paymentQR.jpg'
 import commonFunction from '../../../../features/functions';
 // import { useSelector } from 'react-redux';
 
@@ -13,13 +12,11 @@ const ViewBill = React.forwardRef((props, ref) => {
     const previousBalance = props.previousBalance
     const showPreviousBalance = props.showPreviousBalance
 
-    const exemptedParagraph = bill?.BusinessId?.exemptedParagraph?.split('۔')
+    const exemptedParagraph = bill?.BusinessId?.exemptedParagraph
 
     return bill && (
-        <div className=' h-[28rem] shadow-lg overflow-y-auto scrollbar-thin relative'>
+        <div className=' h-[28rem] shadow-lg overflow-y-auto scrollbar-thin'>
             <div ref={ref} className="view-bill p-4 pt-8 bg-white" >
-
-
                 {/* Business Information */}
                 <div className="flex justify-center">
 
@@ -141,42 +138,30 @@ const ViewBill = React.forwardRef((props, ref) => {
                 </div>
                 {/* Totals Section */}
                 {!packingSlip &&
-                    <div className='grid grid-cols-2 '>
-                        <div className='flex justify-start pl-5'>
-                            <img src={paymentQR} alt="" className=' h-32' />
-                        </div>
-                        <div className='flex justify-end pr-5'>
-                            <div className=" mb-4 text-l border-2 p-3">
-                                <p className='font-semibold'><span className='inline-block font-medium w-44'>Total Gross Amount:</span> {bill && commonFunction.formatAsianNumber(bill.totalAmount)}</p>
-                                <p className='font-semibold'><span className='inline-block font-medium w-44'>Discount Amount:</span> {bill && commonFunction.formatAsianNumber(bill.flatDiscount)}</p>
-                                <p className='font-semibold'><span className='inline-block font-medium w-44'>Paid Amount:</span> {bill && commonFunction.formatAsianNumber(bill.paidAmount)}</p>
-                                <p className='font-bold'><span className='inline-block font-medium w-44'>Bill Balance:</span> {bill && commonFunction.formatAsianNumber(bill?.totalAmount - bill?.flatDiscount - bill?.paidAmount)}</p>
-                                {showPreviousBalance && <p className='font-bold'><span className='inline-block font-medium w-44'>Previous Balance:</span><span className='underline'> {previousBalance && commonFunction.formatAsianNumber(previousBalance - (bill?.totalAmount - bill?.flatDiscount - bill?.paidAmount))}</span></p>}
-                                {showPreviousBalance && <p className='font-bold'><span className='inline-block font-medium w-44'>Total Balance:</span> {previousBalance && commonFunction.formatAsianNumber(previousBalance)}</p>}
-                            </div>
+                    <div className='flex  justify-end'>
+                        <div className=" mb-4 text-l w-5/12">
+                            <p className='font-semibold'><span className='inline-block font-medium w-44'>Total Gross Amount:</span> {bill && commonFunction.formatAsianNumber(bill.totalAmount)}</p>
+                            <p className='font-semibold'><span className='inline-block font-medium w-44'>Discount Amount:</span> {bill && commonFunction.formatAsianNumber(bill.flatDiscount)}</p>
+                            <p className='font-semibold'><span className='inline-block font-medium w-44'>Paid Amount:</span> {bill && commonFunction.formatAsianNumber(bill.paidAmount)}</p>
+                            <p className='font-bold'><span className='inline-block font-medium w-44'>Bill Balance:</span> {bill && commonFunction.formatAsianNumber(bill?.totalAmount - bill?.flatDiscount - bill?.paidAmount)}</p>
+                            {showPreviousBalance && <p className='font-bold'><span className='inline-block font-medium w-44'>Previous Balance:</span><span className='underline'> {previousBalance && commonFunction.formatAsianNumber(previousBalance - (bill?.totalAmount - bill?.flatDiscount - bill?.paidAmount))}</span></p>}
+                            {showPreviousBalance && <p className='font-bold'><span className='inline-block font-medium w-44'>Total Balance:</span> {previousBalance && commonFunction.formatAsianNumber(previousBalance)}</p>}
                         </div>
                     </div>
                 }
 
-                {!packingSlip &&
+                {/* {!packingSlip &&
                     <div className='mt-3'>
                         <p className='text-[12px] text-right'>نوٹ:  کوئی بھی آئیٹم واپس یا تبدیل ہو سکتا ہے بشرطیکہ وہ اپنی اصلی حالت میں ہو اور مکمل پیکنگ میں ہو۔ چائنہ آئیٹمز کی واپسی نہیں ہوگی۔ کسی بھی آئٹم کی واپسی صرف بل یا رسید کی موجودگی میں ہی قابل قبول ہوگی۔ </p>
 
                     </div>
-                }
+                } */}
 
                 {/* Signature Section */}
                 <div className=''>
-                    {
-                        props.exemptedParagraph &&
-                        <div className="text-justify mt-4 text-[10px] pb-5">
-                            <h4 className='text-right mr-4 text-[12px] py-2 font-bold'>:ضروری ہدایات</h4>
-                            <ul>
-                                {exemptedParagraph?.map((paragraph, i) => (
-                                    paragraph.length > 3 &&
-                                    <li key={i} className='text-right flex flex-row-reverse gap-1 py-1'> <span>&#8592;</span> <span>{paragraph}</span></li>
-                                ))}
-                            </ul>
+                    {exemptedParagraph &&
+                        <div className="text-center mt-3 text-xs font-semibold ">
+                            {exemptedParagraph}
                         </div>
                     }
                     <div className='flex items-end justify-end gap-20'>
