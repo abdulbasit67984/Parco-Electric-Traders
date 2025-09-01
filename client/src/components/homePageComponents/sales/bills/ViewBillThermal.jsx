@@ -12,6 +12,7 @@ const ViewBillThermal = React.forwardRef((props, ref) => {
     const packingSlip = props.packingSlip
     const previousBalance = props.previousBalance
     const showPreviousBalance = props.showPreviousBalance
+    const showExemptedParagraph = props.exemptedParagraph
     // console.log(exemptedParagraph)
 
 
@@ -132,7 +133,7 @@ const ViewBillThermal = React.forwardRef((props, ref) => {
                 </div> */}
 
                 {/* Footer Section */}
-                {exemptedParagraph &&
+                {showExemptedParagraph &&
                     <div className="text-center mt-3 text-xs font-semibold ">
                         {exemptedParagraph}
                     </div>
@@ -151,6 +152,8 @@ const ViewBillThermal = React.forwardRef((props, ref) => {
                         </div>
                     </div>
                 )}
+
+                <p className=' text-center text-xs'>Thank You For Shopping!</p>
 
                 <div className='flex justify-center mt-2'>
                     <Logo width='w-10 h-10' className='rounded-full opacity-90 hue-rotate-180' />
