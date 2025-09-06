@@ -3,6 +3,7 @@ import React from 'react';
 import Logo from '../../../Logo';
 import commonFunction from '../../../../features/functions';
 import Barcode from 'react-barcode';
+import thermalLogo from '../../../../assets/thermalLogo.jpg'
 
 
 // ViewBill component wrapped in forwardRef
@@ -156,7 +157,7 @@ const ViewBillThermal = React.forwardRef((props, ref) => {
                 <p className=' text-center text-xs'>Thank You For Shopping!</p>
 
                 <div className='flex justify-center mt-2'>
-                    <Logo width='w-10 h-10' className='rounded-full opacity-90 hue-rotate-180' />
+                    <img src={thermalLogo} className='h-10' alt="Pandas" />
 
                 </div>
                 <div className='text-center text-[8px]'>Software by Pandas. 📞 03103480229 🌐 www.pandas.com.pk</div>
