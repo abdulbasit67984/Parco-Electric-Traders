@@ -20,7 +20,7 @@ const ViewBillThermal = React.forwardRef((props, ref) => {
 
     return bill && (
         <div className="thermal-bill mt-5 w-[80mm] min-h-[24rem] max-h-72 shadow-lg overflow-y-auto scrollbar-thin mx-auto">
-            <div ref={ref} className="view-bill p-2 bg-white">
+            <div ref={ref} className="view-bill p-2 bg-white text-black">
 
                 {/* Business Information */}
                 <div className="text-center mb-2">
