@@ -560,7 +560,10 @@ const InvoiceComponent = () => {
           dispatch(setProduct({}))
           dispatch(setCustomer(null));
           dispatch(setExtraProducts([]))
+
         }
+        setViewBillNo(billNo)
+        fetchLastBillNo(billType)
 
       } catch (error) {
         console.error('Failed to generate bill', error.response.data)
@@ -576,7 +579,7 @@ const InvoiceComponent = () => {
 
       try {
         setIsLoading(true)
-        const response = await config.fetchSingleBill(billId)
+        const response = await config.fetchSingleBill(billNo)
 
         if (response.data) {
           setBill(response.data);
@@ -739,7 +742,7 @@ const InvoiceComponent = () => {
             </span>
             <h2 className={`${billError && 'text-red-500'} text-lg font-thin mb-4`}>{billError ? billError : 'Invoice generated successfully!'}</h2>
             {isInvoiceGenerated &&
-              <Button className='px-4 text-xs' onClick={() => handleViewBill(billNo)}>
+              <Button className='px-4 text-xs' onClick={() => handleViewBill(viewBillNo)}>
                 View Invoice
               </Button>}
           </div>
