@@ -67,8 +67,8 @@ const ViewBillThermal = React.forwardRef((props, ref) => {
                                     <td className="p-1">{commonFunction.truncateString(item.productId.productName, 21)}</td>
                                     <td className="p-1 text-center pl-8">
                                         <div>
-                                            {(item.quantity + item.billItemUnit / item.billItemPack) < 1 ? (item.billItemUnit) : (item.quantity + item.billItemUnit / item.billItemPack) }
-                                            <span> {(item.quantity + item.billItemUnit / item.billItemPack) < 1 ? (item.productId.packUnit)?.toUpperCase() || 'PCS' : (item.productId.quantityUnit)?.toUpperCase() || 'PCS' }</span>
+                                            {((item.quantity + item.billItemUnit / item.billItemPack) < 1 || item.quantity === 0) ? (item.billItemUnit) : (item.quantity + item.billItemUnit / item.billItemPack)?.toFixed(2) }
+                                            <span> {((item.quantity + item.billItemUnit / item.billItemPack) < 1 || item.quantity === 0) ? (item.productId.packUnit)?.toUpperCase() || 'PCS' : (item.productId.quantityUnit)?.toUpperCase() || 'PCS' }</span>
                                         </div>
                                     </td>
                                     {!packingSlip && 

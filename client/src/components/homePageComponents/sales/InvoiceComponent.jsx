@@ -176,52 +176,80 @@ const InvoiceComponent = () => {
   };
 
   const handleItemChange = (index, key, value) => {
-    const updatedItems = selectedItems.map((item, i) =>
-      i === index ? { ...item, [key]: value } : item
-    );
+    const updatedItems = selectedItems.map((item, i) => {
+      if (i === index) {
+        // Restrict quantity not to exceed maxQuantity
+        if (key === "quantity") {
+          const newQty = parseFloat(value) || 0;
+          if (newQty > item.productTotalQuantity / item.productPack) {
+            alert(`You cannot exceed stock limit! Max: ${Math.floor(item.productTotalQuantity / item.productPack)} ${item.quantityUnit}`);
+            return { ...item, quantity: Math.floor(item.productTotalQuantity / item.productPack) };
+          }
+          return { ...item, quantity: newQty };
+        }
+        if (key === "billItemUnit") {
+          const newUnits = parseInt(value) || 0;
+          if (newUnits > item.productTotalQuantity) {
+            alert(`You cannot exceed stock limit! Max: ${item.maxQuantity} ${item.packUnit}`);
+            return { ...item, billItemUnit: item.productTotalQuantity };
+          }
+          return { ...item, billItemUnit: newUnits };
+        }
+        return { ...item, [key]: value };
+      }
+      return item;
+    });
 
-    // Recalculate totals
-    updateTotals();
-
-    // Update selectedItems and totals in the state
     dispatch(setSelectedItems(updatedItems));
+    updateTotals();
   };
 
   const handleAddProduct = () => {
+    if (product.productTotalQuantity <= 0) {
+      alert("Product is out of stock!");
+      return;
+    }
     if (productName !== '') {
-      // Check if the product is already in selectedItems
       const existingProductIndex = selectedItems.findIndex(
         (item) => item._id === product._id
       );
 
       if (existingProductIndex >= 0) {
-        // If the product exists, update its quantity
+        // Already added: check stock before increasing
         const updatedItems = selectedItems.map((item, index) => {
           if (index === existingProductIndex) {
-            return {
-              ...item,
-              quantity: parseFloat(item.quantity) + parseFloat(productQuantity),
-            };
+            const newQty = parseFloat(item.quantity) + parseFloat(productQuantity);
+            if (newQty > item.maxQuantity) {
+              alert(`Cannot add more than ${item.maxQuantity} in stock.`);
+              return { ...item, quantity: item.maxQuantity };
+            }
+            return { ...item, quantity: newQty };
           }
           return item;
         });
 
         dispatch(setSelectedItems(updatedItems));
       } else {
-        // If the product does not exist, add it as a new product
+        // New product: check stock before adding
+        if (productQuantity > product.productTotalQuantity) {
+          alert(`You cannot add more than ${product.productTotalQuantity} in stock.`);
+          return;
+        }
+
         const newProduct = {
           ...product,
+          maxQuantity: product.productTotalQuantity,
           salePrice1: productPrice,
           quantity: productQuantity,
           discount: productDiscount,
-          billItemUnit: 0
+          billItemUnit: 0,
         };
 
-        console.log('updatedItems', selectedItems)
         dispatch(setSelectedItems([...selectedItems, newProduct]));
+        console.log('updatedItems', selectedItems);
       }
 
-      // Clear product details after adding
+      // Reset input fields
       dispatch(setSearchQueryProducts([]));
       dispatch(setProductName(''));
       dispatch(setProductCode(''));
@@ -969,7 +997,12 @@ const InvoiceComponent = () => {
                 );
 
                 if (product) {
-                  handleSelectProduct(product);
+                  const newProduct = {
+                    ...product,
+                    maxQuantity: product.productTotalQuantity
+                  }
+                  console.log('product', newProduct)
+                  handleSelectProduct(newProduct);
                   setTimeout(() => {
                     handleAddProduct();
                   }, 100);
@@ -1176,6 +1209,7 @@ const InvoiceComponent = () => {
                   <th className="py-2 px-1 text-left">Category</th>
                   <th className="py-2 px-1 text-left">Sale Price</th>
                   <th className="py-2 px-1 text-left">Total Qty</th>
+                  <th className="py-2 px-1 text-left">Total Units</th>
                 </tr>
               </thead>
               <tbody>
@@ -1204,6 +1238,7 @@ const InvoiceComponent = () => {
                       )}
                     </td>
                     <td className="px-1 py-1">{Math.ceil(product.productTotalQuantity / product.productPack)}</td>
+                    <td className="px-1 py-1">{Math.ceil(product.productTotalQuantity)} {product.packUnit?.toUpperCase()}</td>
 
                   </tr>
                 )) : <tr className='text-center w-full'>
@@ -1259,9 +1294,9 @@ const InvoiceComponent = () => {
                             type="number"
                             className={`p-1 rounded w-16 text-xs ${billType === 'thermal' ? thermalColor.th100 : A4Color.a4100}`}
                             value={item.billItemUnit || ''}
-                            max={item.productPack}
+                            // max={item.productPack}
                             onChange={(e) => {
-                              if (e.target.value > item.productPack || e.target.value < 0) return;
+                              // if (e.target.value > item.productPack || e.target.value < 0) return;
                               handleItemChange(index, "billItemUnit", parseInt(e.target.value))
                             }}
                           />
