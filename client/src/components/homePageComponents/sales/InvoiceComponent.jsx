@@ -4,6 +4,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import {
+  setAllProducts,
   setSearchQuery,
   setSearchQueryProducts,
   setSelectedItems,
@@ -426,6 +427,13 @@ const InvoiceComponent = () => {
         setIsInvoiceGenerated(true);
         fetchLastBillNo(billType)
 
+        if (response) {
+          const allProductsBefore = await config.fetchAllProducts();
+          if (allProductsBefore.data) {
+            dispatch(setAllProducts(allProductsBefore.data));
+          }
+        }
+
       } catch (error) {
         console.error('Failed to generate bill', error.response.data)
         const errorMessage = extractErrorMessage(error)
@@ -533,6 +541,8 @@ const InvoiceComponent = () => {
 
     const billId = billNo || ""
 
+    if(!userConfirmed) return;
+
     if (userConfirmed) {
       setIsLoading(true)
       console.log(selectedItems)
@@ -592,6 +602,13 @@ const InvoiceComponent = () => {
         }
         setViewBillNo(billNo)
         fetchLastBillNo(billType)
+
+        if (response) {
+          const allProductsBefore = await config.fetchAllProducts();
+          if (allProductsBefore.data) {
+            dispatch(setAllProducts(allProductsBefore.data));
+          }
+        }
 
       } catch (error) {
         console.error('Failed to generate bill', error.response.data)
