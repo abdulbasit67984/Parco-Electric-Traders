@@ -357,7 +357,7 @@ const InvoiceComponent = () => {
 
   const generateInvoice = async () => {
 
-    if (!billType || !billPaymentType || !totalAmount) {
+    if (!billType || !totalAmount) {
       alert("Please fill all the required fields.");
       return;
     }
@@ -394,7 +394,7 @@ const InvoiceComponent = () => {
         const response = await config.createInvoice({
           description,
           billType,
-          billPaymentType,
+          billPaymentType: "cash",
           customer: customerId,
           billItems,
           flatDiscount: flatDiscount || 0,
@@ -571,7 +571,7 @@ const InvoiceComponent = () => {
         const response = await config.createInvoice({
           description,
           billType,
-          billPaymentType,
+          billPaymentType: "cash",
           customer: customerId,
           billItems,
           flatDiscount: 0,
@@ -1046,6 +1046,8 @@ const InvoiceComponent = () => {
               <QuotationComponent
                 selectedItems={selectedItems}
                 totalAmount={totalAmount}
+                billType={billType}
+                billPaymentType={billPaymentType}
               />
             </div>
           </div>
@@ -1097,9 +1099,12 @@ const InvoiceComponent = () => {
                   if (payload.description !== undefined) {
                     setDescription(payload.description ?? "");
                   }
-                  if (payload.billPaymentType !== undefined) {
-                    setBillPaymentType(payload.billPaymentType ?? "");
-                  }
+                  // if (payload.billPaymentType !== undefined) {
+                  //   setBillPaymentType(payload.billPaymentType ?? "");
+                  // }
+
+                  setBillPaymentType("cash");
+                  
                   if (payload.dueDate !== undefined) {
                     setDueDate(payload.dueDate ?? "");
                   }
