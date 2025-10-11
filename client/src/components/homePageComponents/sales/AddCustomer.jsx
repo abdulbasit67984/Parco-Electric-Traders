@@ -6,6 +6,7 @@ import Button from '../../Button';
 import Loader from '../../../pages/Loader';
 import { useSelector, useDispatch } from 'react-redux';
 import { setCustomerData } from '../../../store/slices/customer/customerSlice'
+import { extractErrorMessage } from '../../../utils/extractErrorMessage';
 
 
 const AddCustomer = () => {
@@ -13,6 +14,7 @@ const AddCustomer = () => {
   const [isLoading, setIsLoading] = useState(false)
   const [isCustomerCreated, setIsCustomerCreated] = useState(false)
   const [successMessage, setSuccessMessage] = useState('')
+  const [errorMessage, setErrorMessage] = useState('')
 
   const dispatch = useDispatch()
 
@@ -56,10 +58,16 @@ const AddCustomer = () => {
         }
 
 
+        reset()
       }
-      reset()
     } catch (error) {
     console.log("error adding customer:", error)
+    const message = extractErrorMessage(error)
+    console.log('message', message)
+    setErrorMessage(message)
+    setTimeout(() => {
+        setErrorMessage('');
+      }, 4000);
   } finally {
     setIsLoading(false)
   }
@@ -82,6 +90,7 @@ return (
 
       {/* Error Message Below the Heading */}
       <div className="text-xs text-red-500 mb-2 text-center">
+        {errorMessage && <p>{errorMessage}</p>}
         {errors.customerName && <p>Customer Name is required.</p>}
 
       </div>

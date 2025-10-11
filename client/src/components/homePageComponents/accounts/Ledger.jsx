@@ -16,6 +16,16 @@ const Ledger = () => {
   const [error, setError] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
 
+  const [accountTypeFilter, setAccountTypeFilter] = useState("all");
+  const [balanceTypeFilter, setBalanceTypeFilter] = useState("all");
+  const [regionFilter, setRegionFilter] = useState("");
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
+
+  const [sortOrder, setSortOrder] = useState("none");
+
+
+
   const printRef = useRef();
 
   let balance = 0;
@@ -33,6 +43,8 @@ const Ledger = () => {
         const accountsResponse = await config.getAccounts();
         if (accountsResponse.data) {
           setAccounts(accountsResponse.data);
+          setLoading(false);
+
         } else {
           setError("No accounts found.");
         }
@@ -61,38 +73,69 @@ const Ledger = () => {
 
   const filteredAccounts = accounts.flatMap(account =>
     account.subCategories.flatMap(sub =>
-      sub.individualAccounts.filter(individual =>
-        individual.individualAccountName.toLowerCase().includes(searchTerm.toLowerCase())
-      )
+      sub.individualAccounts.filter(individual => {
+        const nameMatch = individual.individualAccountName.toLowerCase().includes(searchTerm.toLowerCase());
+        const regionMatch = regionFilter ? (individual.customerRegion?.toLowerCase().includes(regionFilter.toLowerCase())) : true;
+
+        const isCustomer = !!individual.customerId;
+        const isSupplier = !!individual.supplierId;
+        const isCompany = !!individual.companyId;
+
+        const accountTypeMatch =
+          accountTypeFilter === "all" ||
+          (accountTypeFilter === "customer" && isCustomer) ||
+          (accountTypeFilter === "supplier" && isSupplier) ||
+          (accountTypeFilter === "company" && isCompany) ||
+          (accountTypeFilter === "others" && !isCustomer && !isSupplier && !isCompany);
+
+        const balanceMatch =
+          balanceTypeFilter === "all" ||
+          (balanceTypeFilter === "positive" && individual.accountBalance > 0) ||
+          (balanceTypeFilter === "negative" && individual.accountBalance < 0) ||
+          (balanceTypeFilter === "zero" && individual.accountBalance === 0);
+
+        return nameMatch && accountTypeMatch && balanceMatch && regionMatch;
+      })
     )
   );
+
+  if (sortOrder === "asc") {
+    filteredAccounts.sort(
+      (a, b) => (a.accountBalance || 0) - (b.accountBalance || 0)
+    );
+  } else if (sortOrder === "desc") {
+    filteredAccounts.sort(
+      (a, b) => (b.accountBalance || 0) - (a.accountBalance || 0)
+    );
+  }
+
 
   // Handle selecting an account
   const handleSelectAccount = (account) => {
     setSelectedAccount(account);
-  
+
     // Filter ledger entries for the selected account
     const filteredEntries = ledgerData.filter(
       (entry) =>
         entry.referenceAccount._id === account._id &&
         entry.individualAccount.name !== "Sales Revenue"
     );
-  
+
     // Find the last "Opening Balance" entry
     const lastOpeningIndex = filteredEntries
       .map((entry) => entry.details)
       .lastIndexOf("Opening Balance");
-  
+
     // Keep only entries up to (and including) the last "Opening Balance"
     const finalFilteredEntries =
       lastOpeningIndex !== -1
         ? filteredEntries.slice(lastOpeningIndex)
         : filteredEntries;
-  
+
     console.log("Filtered Entries:", finalFilteredEntries);
     setSelectedLedgerData(finalFilteredEntries);
   };
-  
+
 
   // Handle closing the General Ledger view
   const handleCloseLedger = () => {
@@ -128,13 +171,66 @@ const Ledger = () => {
       {/* Account List */}
       {!selectedAccount && (
         <div className="bg-gray-50 p-3 max-h-96 overflow-auto scrollbar-track-gray-700 scrollbar-thin ">
-          <input
-            type="text"
-            placeholder="Search Accounts..."
-            className="border p-2 rounded text-sm w-full mb-4"
-            value={searchTerm}
-            onChange={handleSearch}
-          />
+          <div className="bg-white p-3 mb-4 rounded-md shadow flex flex-wrap gap-3 items-center justify-between">
+            {/* Search by name */}
+            <input
+              type="text"
+              placeholder="Search Accounts..."
+              className="border border-gray-300 p-2 rounded text-sm w-48 focus:ring-1 focus:ring-gray-400"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+
+            {/* Account Type */}
+            <select
+              className="border border-gray-300 p-2 rounded text-sm focus:ring-1 focus:ring-gray-400"
+              value={accountTypeFilter}
+              onChange={(e) => setAccountTypeFilter(e.target.value)}
+            >
+              <option value="all">All Types</option>
+              <option value="customer">Customers</option>
+              <option value="supplier">Suppliers</option>
+              <option value="company">Companies</option>
+              <option value="others">Others</option>
+            </select>
+
+            {/* Balance Filter */}
+            <select
+              className="border border-gray-300 p-2 rounded text-sm focus:ring-1 focus:ring-gray-400"
+              value={balanceTypeFilter}
+              onChange={(e) => setBalanceTypeFilter(e.target.value)}
+            >
+              <option value="all">All Balances</option>
+              <option value="positive">Positive Balance</option>
+              <option value="negative">Negative Balance</option>
+              <option value="zero">Zero Balance</option>
+            </select>
+
+            {/* Region Filter */}
+            <select
+              className="border p-2 rounded text-sm w-full sm:w-1/3"
+              value={sortOrder}
+              onChange={(e) => setSortOrder(e.target.value)}
+            >
+              <option value="none">Sort by Balance</option>
+              <option value="asc">Lowest to Highest</option>
+              <option value="desc">Highest to Lowest</option>
+            </select>
+
+            {/* Reset Filters */}
+            <button
+              onClick={() => {
+                setSearchTerm('');
+                setAccountTypeFilter('all');
+                setBalanceTypeFilter('all');
+                setRegionFilter('');
+              }}
+              className="text-sm text-red-600 hover:underline"
+            >
+              Clear All
+            </button>
+          </div>
+
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
             {filteredAccounts.map(individual => (
               <div
@@ -199,26 +295,27 @@ const Ledger = () => {
                     } else if (entry.credit) {
                       balance -= parseInt(entry.credit || 0);
                     }
-                  
+
                     // Now assign the updated balance to this row
                     const entryBalance = balance;
-                   return (
-                    <tr key={entry._id} className="border">
-                      <td className="p-2">{entry.createdAt.slice(0, 10)}</td>
-                      <td className="p-2">{entry.details}</td>
-                      <td className="p-2">{entry.description}</td>
-                      <td className="p-2">{entry.debit && functions.formatAsianNumber(entry.debit)}</td>
-                      <td className="p-2">{entry.credit && functions.formatAsianNumber(entry.credit)}</td>
-                      <td className="p-2">{entryBalance && functions.formatAsianNumber(entryBalance)}</td>
-                    </tr>
-                  )})}
+                    return (
+                      <tr key={entry._id} className="border">
+                        <td className="p-2">{entry.createdAt.slice(0, 10)}</td>
+                        <td className="p-2">{entry.details}</td>
+                        <td className="p-2">{entry.description}</td>
+                        <td className="p-2">{entry.debit && functions.formatAsianNumber(entry.debit)}</td>
+                        <td className="p-2">{entry.credit && functions.formatAsianNumber(entry.credit)}</td>
+                        <td className="p-2">{entryBalance && functions.formatAsianNumber(entryBalance)}</td>
+                      </tr>
+                    )
+                  })}
                 </tbody>
               </table>
             </div>
             <div className="flex justify-end">
               <div className="p-4">
-              <h3 className="p-2 border font-semibold text-xs mr-20">Total Balance: {balance && functions.formatAsianNumber(balance)}</h3>
-              
+                <h3 className="p-2 border font-semibold text-xs mr-20">Total Balance: {balance && functions.formatAsianNumber(balance)}</h3>
+
               </div>
             </div>
             <p className='text-center text-[10px] mt-4'>Software by Pandas. 📞 03103480229 🌐 www.pandas.com.pk</p>

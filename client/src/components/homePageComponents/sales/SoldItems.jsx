@@ -164,6 +164,7 @@ function SoldItems() {
       if (response && response.data) {
         console.log('response.data', response.data)
         dispatch(setBillData([response.data]));
+        calculateTotals([response.data]);
       }
     } catch (error) {
       console.error('Error fetching bill:', error);
