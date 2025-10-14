@@ -413,7 +413,7 @@ const StockRegistrationForm = () => {
                   <select name="" id="" className='px-2 py-1 text-xs'
                     {...register('quantityUnit')}>
                     <option value="">Select Unit</option>
-                    {['pcs', 'pack', 'kg', 'ton','meter', 'yard','ft'].map((unit, i) => (
+                    {['pcs', 'cotton', 'box', 'pack', 'kg', 'ton','meter', 'yard','ft'].map((unit, i) => (
                       <option key={i} value={unit}>{unit.toUpperCase()}</option>
                     ))}
                   </select>
