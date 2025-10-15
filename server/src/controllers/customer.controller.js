@@ -23,10 +23,12 @@ const registerCustomer = asyncHandler(async (req, res) => {
     const BusinessId = user.BusinessId;
     const accountSubCategoryName = "Current Asset";
 
-
-    const existingCustomer = await Customer.findOne({ BusinessId, mobileNo });
-    if (existingCustomer) {
-        throw new ApiError(409, `This mobile number is already registered with ${existingCustomer?.customerName}`);
+    // console.log('mobileNo', mobileNo)
+    if (mobileNo) {
+        const existingCustomer = await Customer.findOne({ BusinessId, mobileNo });
+        if (existingCustomer) {
+            throw new ApiError(409, `This mobile number is already registered with ${existingCustomer?.customerName}`);
+        }
     }
 
     const transactionManager = new TransactionManager();

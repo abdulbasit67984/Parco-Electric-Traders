@@ -63,10 +63,10 @@ const AccountReceivables = () => {
         setReceivables(data);
 
         const billsWithoutPosted = data.filter(
-          (item) => item.isPosted
+          (item) => item.bill.isPosted !== true
         );
 
-        // console.log('billsWithoutPosted', billsWithoutPosted.length)
+        console.log('billsWithoutPosted', billsWithoutPosted.length)
 
         const total = billsWithoutPosted.reduce(
           (sum, item) => sum + ((item?.bill?.totalAmount - item?.bill?.paidAmount - item?.bill?.flatDiscount) || 0),
