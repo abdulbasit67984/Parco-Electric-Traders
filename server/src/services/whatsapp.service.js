@@ -17,7 +17,7 @@ let reconnecting = false;
 export const whatsappEmitter = new EventEmitter(); // used to emit QR updates to frontend
 
 // ✅ Fixed: create a stable puppeteer profile path
-const chromePath = "C:/Users/Hp/.cache/puppeteer/chrome/win64-141.0.7390.78/chrome-win64/chrome.exe";
+const chromePath = "C:/Users/DIBB ComputerS/.cache/puppeteer/chrome/win64-141.0.7390.78/chrome-win64/chrome.exe";
 const userDataDir = path.join(process.cwd(), "puppeteer_data");
 if (!fs.existsSync(userDataDir)) fs.mkdirSync(userDataDir);
 
