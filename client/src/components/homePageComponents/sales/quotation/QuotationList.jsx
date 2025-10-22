@@ -264,7 +264,7 @@ export default function QuotationList({ onLoadQuotation, onClose }) {
 
                             <div className="overflow-auto max-h-72 border rounded  print:overflow-visible print:max-h-none">
                                 <table className="min-w-full text-xs">
-                                    <thead className="sticky text-[10px] top-0 bg-gray-100 border-b">
+                                    <thead className="sticky text-[12px] top-0 bg-gray-100 border-b">
                                         <tr>
                                             <th className="px-2 py-2 text-left">#</th>
                                             <th className="px-2 py-2 text-left">Product</th>
@@ -278,7 +278,7 @@ export default function QuotationList({ onLoadQuotation, onClose }) {
                                     </thead>
                                     <tbody>
                                         {(preview.payload?._rawSelectedItems ?? preview.items ?? []).map((it, idx) => (
-                                            <tr key={idx} className="border-t text-[8px]">
+                                            <tr key={idx} className="border-t text-[10px]">
                                                 <td className="px-2">{idx + 1}</td>
                                                 <td className="px-2">{it.productName ?? it.name ?? it.productCode ?? it.productId ?? "-"}</td>
                                                 <td className="px-2 text-right">{it.quantity ?? "-"}</td>
