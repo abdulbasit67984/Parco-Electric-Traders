@@ -240,7 +240,7 @@ export default function QuotationList({ onLoadQuotation, onClose }) {
                                 PARKO ELECTRIC AND ELECTRONICS
                             </h4>
 
-                            <div className="grid grid-cols-2 gap-3 text-[10px] mb-4">
+                            <div className="grid grid-cols-2 gap-3 text-[12px] mb-4">
                                 <div><span className="text-gray-500">ID:</span> {preview.id}</div>
                                 <div>
                                     <span className="text-gray-500">Created:</span>{" "}
@@ -278,7 +278,7 @@ export default function QuotationList({ onLoadQuotation, onClose }) {
                                     </thead>
                                     <tbody>
                                         {(preview.payload?._rawSelectedItems ?? preview.items ?? []).map((it, idx) => (
-                                            <tr key={idx} className="border-t text-[10px]">
+                                            <tr key={idx} className="border-t text-[12px]">
                                                 <td className="px-2">{idx + 1}</td>
                                                 <td className="px-2">{it.productName ?? it.name ?? it.productCode ?? it.productId ?? "-"}</td>
                                                 <td className="px-2 text-right">{it.quantity ?? "-"}</td>
