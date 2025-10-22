@@ -37,7 +37,8 @@ export const initWhatsapp = async () => {
 
         if (!browser) {
             browser = await puppeteer.launch({
-                executablePath: chromePath,
+                // executablePath: chromePath,
+                executablePath: "C:/Program Files/Google/Chrome/Application/chrome.exe",
                 headless: true,
                 userDataDir,
                 args: [

@@ -81,8 +81,8 @@ const WhatsappConnect = () => {
             {notification && (
                 <div
                     className={`fixed top-5 right-5 px-4 py-2 rounded-md text-sm shadow-lg z-50 ${notification.type === "error"
-                            ? "bg-red-100 text-red-700 border border-red-300"
-                            : "bg-green-100 text-green-700 border border-green-300"
+                        ? "bg-red-100 text-red-700 border border-red-300"
+                        : "bg-green-100 text-green-700 border border-green-300"
                         }`}
                 >
                     {notification.msg}
@@ -182,12 +182,20 @@ const WhatsappConnect = () => {
                 )}
 
                 {status === "connected" && (
-                    <button
-                        onClick={fetchStatus}
-                        className="mt-6 px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-md text-sm flex items-center gap-2"
-                    >
-                        <RefreshCcw className="w-4 h-4" /> Refresh Status
-                    </button>
+                    <div className="flex gap-2">
+                        <button
+                            onClick={fetchStatus}
+                            className="mt-6 px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-md text-sm flex items-center gap-2"
+                        >
+                            <RefreshCcw className="w-4 h-4" /> Refresh Status
+                        </button>
+                        <button
+                            onClick={initializeWhatsapp}
+                            className="mt-6 px-4 py-2 bg-green-400 hover:bg-green-500 text-gray-700 rounded-md text-sm flex items-center gap-2"
+                        >
+                            <Smartphone className="w-4 h-4" /> Restart WhatsApp
+                        </button>
+                    </div>
                 )}
             </motion.div>
         </div>
