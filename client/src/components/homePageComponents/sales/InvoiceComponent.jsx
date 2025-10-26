@@ -522,7 +522,7 @@ const InvoiceComponent = () => {
   };
 
   const filteredCustomers = customerData?.filter((customer) =>
-    customer.customerName.toLowerCase().includes(searchTerm.toLowerCase())
+    customer?.customerName?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   const componentRef = useRef();

@@ -137,7 +137,7 @@ export const checkWhatsappStatus = async () => {
 // Send WhatsApp Message
 export const sendWhatsappMessage = async (number, message) => {
     try {
-        const chatId = number.includes("@c.us") ? number : `${number}@c.us`;
+        const chatId = number?.includes("@c.us") ? number : `${number}@c.us`;
 
         if (!clientReady) {
             console.log(`⏳ Client not ready, queuing message to ${number}`);

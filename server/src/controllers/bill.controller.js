@@ -327,7 +327,7 @@ const registerBill = asyncHandler(async (req, res) => {
             }
 
 
-            if (customer) {
+            if (customer && mobileNo) {
                 await sendWhatsappMessage(mobileNo, `Thank you for choosing Parko Electric & Electronics`);
             }
 
