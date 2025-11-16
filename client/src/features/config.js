@@ -666,6 +666,27 @@ export class Config {
         }
     }
 
+    async deleteCustomer(customerId) {
+        try {
+            const response = await this.client.delete(`/store/delete-customer/${customerId}`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${authService.getAccessToken()}`,
+                        'Content-Type': 'application/json'
+                    }
+                }
+            );
+
+            if (response) {
+                console.log("Delete Response:", response.data);
+                return response.data;
+            }
+        } catch (error) {
+            console.log("Failed Deleting Customer:", error);
+            throw error;
+        }
+    }
+
     async addSupplier({ ...data }) {
         console.log(data)
         try {
