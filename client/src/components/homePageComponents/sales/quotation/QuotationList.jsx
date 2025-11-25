@@ -299,13 +299,13 @@ export default function QuotationList({ onLoadQuotation, onClose }) {
                                 </table>
                             </div>
 
-                            <div className="mt-4 flex items-center justify-between text-sm">
+                            <div className="mt-4 justify-end text-sm">
                                 <div>
-                                    {/* <span className="text-gray-500">Flat Discount:</span>{" "}
-                                    {formatMoney(preview.payload?.flatDiscount ?? 0)} */}
+                                    <span className="text-gray-500">Flat Discount:</span>{" "}
+                                    {formatMoney(preview.payload?.flatDiscount ?? 0)}
                                 </div>
                                 <div className="font-semibold">
-                                    Total: {formatMoney(preview.payload?.totalAmount ?? preview.total)}
+                                    Total: {formatMoney(preview.payload?.totalAmount - preview.payload?.flatDiscount ?? preview.total)}
                                 </div>
                             </div>
                         </div>
