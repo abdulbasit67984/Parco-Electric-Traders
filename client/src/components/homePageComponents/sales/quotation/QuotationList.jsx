@@ -291,7 +291,7 @@ export default function QuotationList({ onLoadQuotation, onClose }) {
                                                     {formatMoney(it.discount ?? 0)}
                                                 </td>
                                                 <td className="px-2 text-right">
-                                                    {formatMoney((it.salePrice1 * (it.billItemUnit / it.productPack + it.quantity))?? 0)}
+                                                    {formatMoney((it.salePrice1 * (it.billItemUnit / it.productPack + it.quantity)) - ((it.salePrice1 * (it.billItemUnit / it.productPack + it.quantity)) * (it.discount / 100 ))?? 0)}
                                                 </td>
                                             </tr>
                                         ))}
