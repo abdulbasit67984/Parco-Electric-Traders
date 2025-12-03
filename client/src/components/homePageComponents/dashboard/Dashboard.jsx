@@ -49,41 +49,6 @@ const Loader = ({ message, h_w }) => (
   </div>
 );
 
-// Mock Data Generator
-const generateMockData = () => {
-  return {
-    salesData: Array.from({ length: 12 }, (_, i) => ({
-      date: `2024-${String(i + 1).padStart(2, '0')}-01`,
-      sales: Math.floor(Math.random() * 500000) + 100000,
-      purchases: Math.floor(Math.random() * 300000) + 50000,
-    })),
-    stockData: [
-      { productName: "Wireless Headset", totalQuantity: 400 },
-      { productName: "Gaming Mouse", totalQuantity: 300 },
-      { productName: "Mechanical Keyboard", totalQuantity: 300 },
-      { productName: "USB-C Hub", totalQuantity: 200 },
-      { productName: "Monitor Stand", totalQuantity: 150 },
-    ],
-    categoryData: [
-      { category: "Electronics", quantity: 1200 },
-      { category: "Accessories", quantity: 900 },
-      { category: "Furniture", quantity: 300 },
-      { category: "Cables", quantity: 500 },
-    ],
-    totalSales: 4500000,
-    totalRevenue: 1200000,
-    avgSales: 375000,
-    topProduct: { productName: "Wireless Headset" },
-    leastProduct: { productName: "Old VGA Cable" },
-    outOfStock: [
-      { productName: "HDMI Cable 2m" },
-      { productName: "Webcam 1080p" },
-      { productName: "Laptop Stand" }
-    ]
-  };
-};
-
-
 // --- Animation Variants ---
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -200,8 +165,8 @@ const Dashboard = () => {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-[80vh] bg-slate-950">
-        <Loader message="Analyzing Business Data..." h_w="h-16 w-16 border-4" />
+      <div className="flex items-center justify-center min-h-[80vh] bg-white">
+        <Loader message="Analyzing Dashboard Data..." h_w="h-16 w-16 border-4" />
       </div>
     );
   }
