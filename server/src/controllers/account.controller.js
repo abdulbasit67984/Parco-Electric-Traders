@@ -1361,14 +1361,14 @@ const getTotalInventory = asyncHandler(async (req, res) => {
 
             const purchaseValue = packs * productPurchasePrice;
 
-            console.log(`
-        Product: ${productName}
-        Total Quantity: ${productTotalQuantity}
-        Pack Size: ${productPack}
-        Purchase Price (per pack): ${productPurchasePrice}
-        Packs: ${packs}
-        Purchase Value: ${purchaseValue}
-      `);
+    //         console.log(`
+    //     Product: ${productName}
+    //     Total Quantity: ${productTotalQuantity}
+    //     Pack Size: ${productPack}
+    //     Purchase Price (per pack): ${productPurchasePrice}
+    //     Packs: ${packs}
+    //     Purchase Value: ${purchaseValue}
+    //   `);
 
             totalInventoryValue += purchaseValue;
         });

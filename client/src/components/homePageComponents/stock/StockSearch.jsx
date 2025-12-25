@@ -23,6 +23,7 @@ const StockSearch = () => {
     const [productName, setProductName] = useState('');
     const [searchQuery, setSearchQuery] = useState('');
     const [deleteId, setDeleteId] = useState('');
+    const [totalInventory, setTotalInventory] = useState(0);
 
     const [filteredProducts, setFilteredProducts] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
@@ -118,8 +119,8 @@ const StockSearch = () => {
 
         const confirm = window.confirm('Are You sure to want to delete this product? This Action cannot be undone!')
 
-        if(!confirm) return
-        
+        if (!confirm) return
+
         try {
             const response = await config.deleteProduct(id);
             if (response) {
@@ -150,6 +151,14 @@ const StockSearch = () => {
     }, []);
 
     useEffect(() => {
+        let totalValue = 0;
+        allProducts.forEach(product => {
+            totalValue += product.productPurchasePrice * (product.productTotalQuantity / product.productPack);
+        });
+        setTotalInventory(totalValue);
+    }, [allProducts]);
+
+    useEffect(() => {
         let results = allProducts;
         if (searchQuery) {
             results = allProducts?.filter(
@@ -168,10 +177,10 @@ const StockSearch = () => {
 
     const exportToCSV = () => {
         const headers = [
-            "Code", "Name", "Type", "Pack", "Company", "Vendor", "product Discount Percentage", "Category", "product Purchase Price", "Sale Price1", "Sale Price2", "Sale Price3", "Sale Price4", "Total Qty", "status"
+            "Code", "Name", "Type", "Pack", "Company", "Vendor", "product Discount Percentage", "Category", "Sale Price1", "Sale Price2", "Sale Price3", "Sale Price4", "Total Qty", "product Purchase Price", `Total Units`, "Purchase Price (Unit)", "Inventory Value Summation"
         ];
 
-        const rows = currentProducts.map(product => [
+        const rows = allProducts?.map(product => [
             product.productCode,
             product.productName,
             product.typeDetails[0]?.typeName,
@@ -179,14 +188,16 @@ const StockSearch = () => {
             product.companyDetails[0]?.companyName,
             product.vendorSupplierDetails[0]?.supplierName || product.vendorCompanyDetails[0]?.companyName,
             product.productDiscountPercentage,
-            product.categoryDetails[0]?.productName,
-            product.productPurchasePrice,
+            product.categoryDetails[0]?.categoryName,
             product.salePriceDetails[0]?.salePrice1,
             product.salePriceDetails[0]?.salePrice2,
             product.salePriceDetails[0]?.salePrice3,
             product.salePriceDetails[0]?.salePrice4,
-            Math.ceil(product.productTotalQuantity / product.productPack),
-            product.status
+            (product.productTotalQuantity / product.productPack).toFixed(2),
+            product.productPurchasePrice,
+            (product.productTotalQuantity)?.toFixed(2),
+            (product.productPurchasePrice / product.productPack)?.toFixed(2),
+            (product.productPurchasePrice * (product.productTotalQuantity / product.productPack)).toFixed(2)
         ]);
 
         const csvContent =
@@ -221,12 +232,19 @@ const StockSearch = () => {
                         onChange={(e) => setSearchQuery(e.target.value)}
                         ref={inputRef}
                     />
-                    <button
-                        onClick={exportToCSV}
-                        className="bg-green-500 hover:bg-green-600 text-white py-1 px-3 rounded text-xs"
-                    >
-                        Export CSV
-                    </button>
+                    <div className='flex gap-2'>
+                        <div>
+                            <span>
+                                Total Inventory Value: {totalInventory.toFixed(2)}
+                            </span>
+                        </div>
+                        <button
+                            onClick={exportToCSV}
+                            className="bg-green-500 hover:bg-green-600 text-white py-1 px-3 rounded text-xs"
+                        >
+                            Generate Excel File
+                        </button>
+                    </div>
                 </div>
                 {currentProducts && currentProducts.length > 0 &&
                     <div className="overflow-auto max-h-80 scrollbar-thin rounded">
@@ -237,12 +255,14 @@ const StockSearch = () => {
                                     <th className="py-2 px-1 text-left">Name</th>
                                     <th className="py-2 px-1 text-left">Type</th>
                                     <th className="py-2 px-1 text-left">Pack</th>
-                                    <th className="py-2 px-1 text-left">Company</th>
+                                    {/* <th className="py-2 px-1 text-left">Company</th>
                                     <th className="py-2 px-1 text-left">Vendor</th>
-                                    <th className="py-2 px-1 text-left">Category</th>
+                                    <th className="py-2 px-1 text-left">Category</th> */}
                                     <th className="py-2 px-1 text-left">Sale Price</th>
                                     <th className="py-2 px-1 text-left">Total Qty</th>
+                                    <th className="py-2 px-1 text-left">Purchase Price</th>
                                     <th className="py-2 px-1 text-left">Total Units</th>
+                                    <th className="py-2 px-1 text-left">Purchase Price (Unit)</th>
                                     <th className="py-2 px-1 text-left">Action</th>
                                 </tr>
                             </thead>
@@ -253,12 +273,14 @@ const StockSearch = () => {
                                         <td className="px-1 py-1">{product.productName}</td>
                                         <td className="px-1 py-1">{product.typeDetails[0]?.typeName}</td>
                                         <td className="px-1 py-1">{product.productPack}</td>
-                                        <td className="px-1 py-1">{product.companyDetails[0]?.companyName}</td>
+                                        {/* <td className="px-1 py-1">{product.companyDetails[0]?.companyName}</td>
                                         <td className="px-1 py-1">{product.vendorSupplierDetails[0]?.supplierName || product.vendorCompanyDetails[0]?.companyName}</td>
-                                        <td className="px-1 py-1">{product.categoryDetails[0]?.productName}</td>
+                                        <td className="px-1 py-1">{product.categoryDetails[0]?.categoryName}</td> */}
                                         <td className="px-1 py-1">{product.salePriceDetails[0]?.salePrice1}</td>
                                         <td className="px-1 py-1">{Math.ceil(product.productTotalQuantity / product.productPack)}</td>
-                                        <td className="px-1 py-1">{Math.ceil(product.productTotalQuantity)}</td>
+                                        <td className={`px-1 py-1 ${product.productPurchasePrice > product.salePriceDetails[0]?.salePrice1 && 'bg-red-400'}`}>{product.productPurchasePrice}</td>
+                                        <td className="px-1 py-1">{(product.productTotalQuantity)?.toFixed(2)}</td>
+                                        <td className="px-1 py-1">{(product.productPurchasePrice / product.productPack)?.toFixed(2)}</td>
                                         <td className="py-1 px-2 flex gap-2">
                                             <button
                                                 className="bg-red-500 hover:bg-red-700 text-white py-1 px-2 rounded-full"
